@@ -1,0 +1,65 @@
+<div class="main-header">
+    <div class="logo">
+        <img src="./assets/images/logo.png" alt="">
+    </div>
+
+    <div *ngIf="ngIsAuthenticated()" class="menu-toggle" (click)="toggelSidebar()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="d-flex align-items-center">
+        <a href="#">Inicio</a>
+    </div>
+
+    <div style="margin: auto"></div>
+
+    <div class="header-part-right">
+        <div *ngIf="ngIsAuthenticated()" ngbDropdown [placement]="'bottom-right'">
+            <div class="badge-top-container">
+                <span class="badge badge-primary">{{notifications.length}}</span>
+                <i ngbDropdownToggle class="i-Bell text-muted header-icon" role="button"></i>
+            </div>
+            <div ngbDropdownMenu class="notification-dropdown rtl-ps-none" perfectScrollbar>
+                <div class="dropdown-item d-flex" *ngFor="let item of notifications" [routerLink]="[item.link]">
+                    <div class="notification-icon">
+                        <i class="{{item.icon}} text-{{item.status}} mr-1"></i>
+                    </div>
+                    <div class="notification-details flex-grow-1">
+                        <p class="m-0 d-flex align-items-center">
+                            <span>{{item.title}}</span>
+                            <span *ngIf="item.badge" class="badge badge-pill badge-{{item.status}} ml-1 mr-1">{{item.badge}}</span>
+                            <span class="flex-grow-1"></span>
+                            <span class="text-small text-muted ml-auto">{{item.time | relativeTime}}</span>
+                        </p>
+                        <p class="text-small text-muted m-0">{{item.text | excerpt:30}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="ngIsAuthenticated()" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
+            <img [src]="auth.getuser().photo || './assets/images/faces/unnamed.jpg'" id="userDropdown" ngbDropdownToggle alt="">
+            <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
+                <div class="dropdown-header">
+                    <i class="i-Lock-User mr-1"></i> {{auth.getuser().name}}
+                </div>
+                <button class="dropdown-item">Meus dados</button>
+                <button class="dropdown-item" (click)="signout()">Sair</button>
+            </div>
+        </div>
+        <div *ngIf="!ngIsAuthenticated()" ngbDropdown [placement]="'bottom-right'" class="user col align-self-end">
+            <img src="./assets/images/faces/unnamed.jpg" id="unamedDropdown" ngbDropdownToggle alt="">
+            <div ngbDropdownMenu aria-labelledby="userDropdown" class="header-account-dropdown">
+                <div class="dropdown-header">
+                    <i class="i-User mr-1"></i> Olá visitante!
+                </div>
+                <button class="dropdown-item" (click)="signin()">Entrar</button>
+                <button class="dropdown-item" (click)="signup()">Cadastrar</button>
+                
+            </div>
+        </div>
+
+    </div>
+
+</div>
