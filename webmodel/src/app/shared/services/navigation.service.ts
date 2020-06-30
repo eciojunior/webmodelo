@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnChanges, SimpleChanges } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface IMenuItem {
     id?: string;
@@ -10,10 +11,10 @@ export interface IMenuItem {
     state?: string;     // Router state
     icon?: string;      // Material icon name
     tooltip?: string;   // Tooltip text
-    disabled?: boolean; // If true, item will not be appeared in sidenav.
     sub?: IChildItem[]; // Dropdown items
     badges?: IBadge[];
     active?: boolean;
+    hasRole?: String[];
 }
 export interface IChildItem {
     id?: string;
@@ -23,6 +24,7 @@ export interface IChildItem {
     state?: string;     // Router state
     icon?: string;
     sub?: IChildItem[];
+    hasRole?: string[];
     active?: boolean;
 }
 
@@ -45,20 +47,19 @@ export class NavigationService {
         childnavOpen: false
     };
     selectedItem: IMenuItem;
+    constructor(
+        private auth: AuthService
+    ) {}
     
-    constructor() {
-    }
-
     defaultMenu: IMenuItem[] = [
         {
             name: 'Usuários',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+            description: 'Informações de usuário.',
             type: 'dropDown',
             icon: 'i-Administrator',
             sub: [
-                { icon: 'i-Add-User', name: 'Sign up', state: '/sessions/signup', type: 'link' },
-                { icon: 'i-Checked-User', name: 'Sign in', state: '/sessions/signin', type: 'link' },
-                { icon: 'i-Find-User', name: 'Forgot', state: '/sessions/forgot', type: 'link' }
+                { icon: 'i-Checked-User', name: 'Meus Dados', state: '/user/data', type: 'link' },
+                { icon: 'i-Add-User', name: 'Lista de Usuários', state: '/user/list', type: 'link', hasRole: ["ADMIN"]}
             ]
         },
         {

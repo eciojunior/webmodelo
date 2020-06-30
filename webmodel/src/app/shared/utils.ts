@@ -1,3 +1,4 @@
+import { FormGroup } from '@angular/forms';
 export class Utils {
     static isMobile() {
         return window && window.matchMedia('(max-width: 767px)').matches;
@@ -28,5 +29,21 @@ export class Utils {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
+    }
+
+    static MustMatch(controlName: string, matchingControlName: string) {
+        return (formGroup: FormGroup) => {
+            const control = formGroup.controls[controlName];
+            const matchingControl = formGroup.controls[matchingControlName];
+    
+            if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+                return;
+            }
+            if (control.value !== matchingControl.value) {
+                matchingControl.setErrors({ mustMatch: true });
+            } else {
+                matchingControl.setErrors(null);
+            }
+        }
     }
 }

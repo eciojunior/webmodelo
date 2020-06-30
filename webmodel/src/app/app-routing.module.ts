@@ -2,15 +2,21 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminLayoutSidebarLargeComponent } from './shared/components/layouts/admin-layout-sidebar-large/admin-layout-sidebar-large.component';
 import { HomeComponent } from './views/home/home.component';
-
+import { AuthGaurd } from './shared/services/auth.gaurd';
+import { AdminGaurd } from './shared/services/admin.gaurd';
 const adminRoutes: Routes = [
     {
       path: '',
-      component: HomeComponent
+      component: HomeComponent,
     },
     {
-      path: 'sessions',
-      loadChildren: () => import('./views/sessions/sessions.module').then(m => m.SessionsModule)
+      path: 'partner',
+      loadChildren: () => import('./views/partners/partners.module').then(m => m.PartnersModule)
+    },
+    {
+      path: 'user',
+      loadChildren: () => import('./views/user/user.module').then(m => m.UserModule),
+      canActivate: [AuthGaurd]
     }
   ];
 

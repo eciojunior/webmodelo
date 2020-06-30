@@ -1,0 +1,46 @@
+.userPhoto {
+    width: auto;
+    height: 200px;
+    margin-left: 50px;
+    margin-right: auto;
+}
+
+.editPhoto {
+    height: 40px;
+    width: 40px;
+    margin-top: 80px;
+    position: absolute;
+    opacity: 0.9;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.myLink {
+    margin-top: 50px;
+    text-align: center;
+    font-weight: bold;
+    .title {
+        .text {
+            width: 100%;
+            text-align: center;
+            font-size: 15px;
+        }
+    }
+    .lin {
+        .url {
+            width: 100%;
+            text-align: center;
+            font-size: 25px;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            line-height: 50px;
+            color: #663399;
+            border: Solid 1px #33214b;
+            border-radius: 25px;
+        }
+    }
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}

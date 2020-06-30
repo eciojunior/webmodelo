@@ -1,0 +1,39 @@
+.tituloPagina {
+    width: 100%;
+    margin-top: 10px;
+    .row {
+        align-content: center;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .htitle {
+        text-align: center;
+        color: #5b7499;
+        width: 100%;
+        line-height: 50px;
+        font-size: 40px;
+        font-weight: bold;
+    }
+}
+.material {
+    text-align: center;
+
+}
+
+.imgEmp {
+    height: 60px;
+    width: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rowName {
+    font-weight: bold;
+    text-align: center;
+    line-height: 45px;
+    width: 100%;
+    .destaque {
+        color: #663399;
+    }
+}

@@ -1,14 +1,10 @@
 import { Component, OnInit, HostListener, ViewChildren, QueryList } from '@angular/core';
-import {
-  NavigationService,
-  IMenuItem,
-  IChildItem
-} from '../../../../services/navigation.service';
+import { NavigationService, IMenuItem } from '../../../../services/navigation.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
-
 import { filter } from 'rxjs/operators';
 import { Utils } from '../../../../utils';
+import { AuthService } from '../../../../services/auth.service'
 
 @Component({
   selector: 'app-sidebar-large',
@@ -21,7 +17,7 @@ export class SidebarLargeComponent implements OnInit {
   @ViewChildren(PerfectScrollbarDirective) psContainers:QueryList<PerfectScrollbarDirective>;
   psContainerSecSidebar: PerfectScrollbarDirective;
 
-  constructor(public router: Router, public navService: NavigationService) {
+  constructor(public router: Router, public navService: NavigationService, public authService: AuthService) {
     setTimeout(() => {
       this.psContainerSecSidebar = this.psContainers.toArray()[1];
     });
@@ -29,7 +25,6 @@ export class SidebarLargeComponent implements OnInit {
 
   ngOnInit() {
     this.updateSidebar();
-    // CLOSE SIDENAV ON ROUTE CHANGE
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(routeChange => {
@@ -38,11 +33,24 @@ export class SidebarLargeComponent implements OnInit {
           this.navService.sidebarState.sidenavOpen = false;
         }
       });
+    this.createNav();
+  }
 
+  createNav() {
     this.navService.menuItems$.subscribe(items => {
       this.nav = items;
-      this.setActiveFlag();
+      this.setActiveFlag(); 
     });
+  }
+
+  hasRole(listItem) { 
+    if (listItem) {
+      let idx = listItem.find(l => {
+        return this.authService.hasRole(l);
+      });
+      return idx != null;
+    }
+    return true;
   }
 
   selectItem(item) {

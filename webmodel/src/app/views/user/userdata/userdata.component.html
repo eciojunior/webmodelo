@@ -1,0 +1,126 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Meus Dados</h1>
+        <ul>
+            <li>Usuário</li>
+            <li>Dados</li>
+        </ul>
+    </div>
+    <div class="separator-breadcrumb border-top"></div>
+</div>
+<div class="card-body">
+    <div class="card-title mb-3">Dados Pessoais</div>
+    <form [formGroup]="formUser" (ngSubmit)="confirm(modalConfirm)">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="firstName">Nome</label>
+                        <input type="text" class="form-control" formControlName="name" id="firstName">
+                    </div>
+
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="exampleInputEmail1">Email</label>
+                        <input type="email" class="form-control" formControlName="email" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    </div>
+
+                    <div class="col-md-3 form-group mb-3">
+                        <label for="phone">Celular</label>
+                        <input class="form-control" id="phone" [textMask]="{mask: phoneMask}" formControlName="cel" type="text"/>
+                    </div>
+                    <div class="col-md-3 form-group mb-3">
+                        <label for="permissao">Permissão</label>
+                        <input class="form-control" id="permissao" formControlName="authority" type="text"/>
+                    </div>
+                    <div class="col-md-6 form-group mb-3">
+                        <label for="wallet">Carteira LQX</label>
+                        <input class="form-control" id="wallet" formControlName="wallet" type="text"/>
+                        <label style="margin-left: 5px;">Nao tem carteira? <a target="_blank" href="https://office.wehpm.com/register">Clique aqui.</a></label>
+                    </div>
+                    <div class="col-md-12">
+                        <button style="float: right;" class="btn btn-primary btn-rounded" >Atualizar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <img id="editPhoto" class="editPhoto" src="../../../../assets/images/edit.png" (click)="changePhoto(modalUrl)">
+                    <img id="userPhoto" class="userPhoto" [src]="formUser.value.photo || './assets/images/faces/unnamed.jpg'"/>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div *ngIf="userIndicate.present">
+    <div class="card-body">
+        <div class="card-title mb-3">Indicado Por</div>
+        <form [formGroup]="formIndicate">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4 form-group mb-3">
+                            <label for="firstName">Nome</label>
+                            <input type="text" class="form-control" formControlName="name" id="firstName">
+                        </div>
+
+                        <div class="col-md-4 form-group mb-3">
+                            <label for="exampleInputEmail1">Email</label>
+                            <input type="email" class="form-control" formControlName="email" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        </div>
+
+                        <div class="col-md-4 form-group mb-3">
+                            <label for="phone">Celular</label>
+                            <input class="form-control" id="phone" [textMask]="{mask: phoneMask}" formControlName="cel" type="text"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="separator-breadcrumb border-top"></div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 myLink">
+        <div class="row title">
+            <label class="text">Compartilhe este link com seus amigos, para ganhar bonus por indicação:</label>
+        </div>
+        <div class="row lin">
+            <label class="url">{{myUrl}}</label>
+        </div>
+    </div>
+</div>
+<ng-template #modalUrl let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">Mudar Foto</h4>
+      <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="name">Url</label>
+            <input ngbAutofocus id="name"  [(ngModel)]="url"  class="form-control form-control-rounded" type="text">
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary btn-rounded m-1" (click)="setPhoto(url)">Alterar</button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalConfirm let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-title">Alterar Dados</h4>
+      <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Tem certeza que deseja alterar seus dados?</strong></p>
+      <p><span class="text-danger">Não será necessário fazer um novo login para atualizar os dados.</span></p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-warning btn-rounded m-1" (click)="modal.dismiss('cancel')">Cancel</button>
+      <button type="button" class="btn btn-primary btn-rounded m-1" (click)="modal.close('Ok')">Ok</button>
+    </div>
+  </ng-template>

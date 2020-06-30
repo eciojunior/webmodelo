@@ -1,0 +1,62 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Lojas</h1>
+        <ul>
+            <li>Parceiros</li>
+            <li>Credenciados</li>
+        </ul>
+    </div>
+    <div class="separator-breadcrumb border-top"></div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input id="email" placeholder="Pesquisar Loja" [formControl]="searchControl" class="form-control form-control-rounded" type="email">
+          </div>
+        </div>
+        <div class="col-md-12">
+            <div class=" o-hidden">
+                <ngx-datatable
+                style="height: 550px; box-shadow: none"
+                class="material fullscreen"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="80"
+                [scrollbarV]="true"
+                [rows]="filteredProducts">
+                  <ngx-datatable-column name="photo" [maxWidth]="120">
+                    <ng-template ngx-datatable-header-template>
+                      Loja
+                    </ng-template>
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                          <img class="imgEmp" [src]="row.photo" alt="">
+                      </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="name" [maxWidth]="400">
+                    <ng-template ngx-datatable-header-template></ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                      <label class="rowName">{{row.name}}</label>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="cashback" [maxWidth]="250">
+                    <ng-template ngx-datatable-header-template>
+                      Cashback
+                    </ng-template>
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <label class="rowName">Até <label class="destaque">{{row.userCashback || defaultCashback}}%</label> de LQX cashback</label>
+                      </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="redirect" [maxWidth]="120">
+                      <ng-template ngx-datatable-header-template></ng-template>
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button class="btn btn-outline-primary m-1" (click)="onNavigate(row.redirect)">Ver site</button>
+                      </ng-template>
+                  </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>  

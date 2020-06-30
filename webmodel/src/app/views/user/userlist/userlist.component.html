@@ -1,0 +1,85 @@
+<div class="">
+    <div class="breadcrumb">
+        <h1>Usuários</h1>
+        <ul>
+            <li>Usuário</li>
+            <li>Todos</li>
+        </ul>
+    </div>
+    <div class="separator-breadcrumb border-top"></div>
+
+    <div class="row">
+      <div class="col-md-9">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input id="email" placeholder="Pesquisar Usuário" [formControl]="searchControl" class="form-control form-control-rounded" type="text">
+          </div>
+        </div>
+        <div class="col-md-12">
+            <div class=" o-hidden">
+                <ngx-datatable
+                style="height: 550px; box-shadow: none"
+                class="material fullscreen"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="80"
+                [scrollbarV]="true"
+                [rows]="filtered">
+                  <ngx-datatable-column name="photo" [maxWidth]="120">
+                    <ng-template ngx-datatable-header-template>
+                      Usuário
+                    </ng-template>
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                          <img [src]="row.photo" alt="">
+                      </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="name" [maxWidth]="400">
+                    <ng-template ngx-datatable-header-template></ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                      <label class="texto">{{row.name}}</label>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="name" [maxWidth]="340">
+                    <ng-template ngx-datatable-header-template>Email</ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                      <label class="texto">{{row.email}}</label>
+                    </ng-template>
+                  </ngx-datatable-column>                  
+                  <ngx-datatable-column name="name" [maxWidth]="100">
+                    <ng-template ngx-datatable-header-template>Perfil</ng-template>
+                    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                      <label class="texto">{{row.authority}}</label>
+                    </ng-template>
+                  </ngx-datatable-column>
+                  <ngx-datatable-column name="redirect" [maxWidth]="230">
+                      <ng-template ngx-datatable-header-template>Ações</ng-template>
+                      <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
+                        <button *ngIf="row.authority.toUpperCase() == 'USER'" class="btn btn-outline-primary m-1" 
+                          (click)="confirm(modalConfirm, row.id, 'ADMIN')">Tornar Admin</button>
+                        <button *ngIf="row.authority.toUpperCase() == 'ADMIN'" class="btn btn-outline-primary m-1" 
+                          (click)="confirm(modalConfirm, row.id, 'USER')">Tornar User</button>
+                      </ng-template>
+                  </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>  
+<ng-template #modalConfirm let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Alterar Permissão</h4>
+    <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Tem certeza que deseja alterar o perfil deste usuário?</strong></p>
+    <p><span class="text-danger">O usuário precisará reconectar para ter acesso aos novos privilégios.</span></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-warning btn-rounded m-1" (click)="modal.dismiss('cancel')">Cancel</button>
+    <button type="button" class="btn btn-primary btn-rounded m-1" (click)="modal.close('Ok')">Ok</button>
+  </div>
+</ng-template>

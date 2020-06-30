@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LocalStoreService } from "./local-store.service";
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 
 export class RestService {
 
-    constructor(private http:HttpClient, private store: LocalStoreService, private toastr: ToastrService) {}
+    constructor(private http:HttpClient, private store: LocalStoreService, private toastr: ToastrService, private router: Router) {}
 
     private requests = {
         login: {
@@ -19,6 +20,46 @@ export class RestService {
         },
         getUser: {
             url: "login/user/##",
+            method: "get"
+        },
+        getAllPartners: {
+            url: "partner/all",
+            method: "get"
+        },
+        getDefaultUserCashback: {
+            url: "user/cashback/default",
+            method: "get"
+        },
+        registerUser: {
+            url: "user/register",
+            method: "post"
+        },
+        changePassword: {
+            url: "user/password/change",
+            method: "post"
+        },
+        getAllUser: {
+            url: "user/all",
+            method: "get"
+        },
+        userChangeAuthority: {
+            url: "user/authority/change/##",
+            method: "get"
+        },
+        updateUser: {
+            url: "user/update",
+            method: "post"
+        },
+        getIndicateUser: {
+            url: "user/indicate/##",
+            method: "get"
+        },
+        getNotificationUser: {
+            url: "user/notification",
+            method: "get"
+        },
+        userReadNotification: {
+            url: "user/notification/read/##",
             method: "get"
         }
     }
@@ -29,7 +70,7 @@ export class RestService {
             this.toastr.error("Serviço não mapeado, entre em contato com o desenvolvedor.")
             return;
         }
-        let url = this.getUrl(request, urlParams);
+        let url = this.getUrl(request, body, urlParams);
         let headers = this.getHeaders(personalHeaders);
         return this.callMethod(request.method, url, body, headers);
     }
@@ -37,29 +78,15 @@ export class RestService {
     private callMethod (method, url, body?, headers?) {
         return new Promise((resolve, reject) => {
             switch(method) {
-                case "get": {
-                    this.http.get(url, headers).subscribe(data => { resolve(data) }, error => {
+                case "get": case "delete": {
+                    this.http[method](url, headers).subscribe(data => { resolve(data) }, error => {
                         this.resolveError(error);
                         reject(error);
                     });
                     break;
                 }
-                case "post": {
-                    this.http.post(url, body, headers).subscribe(data => { resolve(data) }, error => {
-                        this.resolveError(error);
-                        reject(error);
-                    });
-                    break;
-                }
-                case "put": {
-                    this.http.put(url, body, headers).subscribe(data => { resolve(data) }, error => {
-                        this.resolveError(error);
-                        reject(error);
-                    });
-                    break;
-                }
-                case "delete": {
-                    this.http.delete(url, headers).subscribe(data => { resolve(data) }, error => {
+                case "post": case "put": {
+                    this.http[method](url, body, headers).subscribe(data => { resolve(data) }, error => {
                         this.resolveError(error);
                         reject(error);
                     });
@@ -73,7 +100,8 @@ export class RestService {
         if (response.status == 401) {
             this.store.setItem("auth_user", null);
             this.store.setItem("user", null);
-            this.toastr.info("Sua sessão expirou, entre novamente!", "Olá");
+            this.toastr.info("Sua sessão expirou!", "Olá");
+            this.router.navigateByUrl("/");
             return false;
         }
         this.toastr.error(response.error["message"], "Atenção!");
@@ -89,12 +117,20 @@ export class RestService {
         }
     }
 
-    private getUrl(request, urlParams) {
+    private getUrl(request, body?, urlParams?) {
         let url = environment.urlBack + request["url"];
         if (Array.isArray(urlParams) && urlParams.length > 0) {
             urlParams.forEach(p => {
                 url = url.replace("##", p);
             })
+        }
+        if (["get", "delete"].includes(request.method) && body != null) {
+            url = url + "?";
+            let params = [];
+            Object.keys(body).forEach(p => {
+                params.push(p + "=" + body[p]);
+            });
+            url = url + params.join("&");
         }
         return url;
     }

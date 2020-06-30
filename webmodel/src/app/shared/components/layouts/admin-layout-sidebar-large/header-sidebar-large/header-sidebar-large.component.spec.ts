@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HeaderSidebarLargeComponent } from './header-sidebar-large.component';
 
 describe('HeaderSidebarLargeComponent', () => {

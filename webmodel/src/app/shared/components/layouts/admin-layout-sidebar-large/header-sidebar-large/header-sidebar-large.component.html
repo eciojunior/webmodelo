@@ -3,14 +3,11 @@
         <img src="./assets/images/logo.png" alt="">
     </div>
 
-    <div *ngIf="ngIsAuthenticated()" class="menu-toggle" (click)="toggelSidebar()">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-
     <div class="d-flex align-items-center">
         <a href="#">Inicio</a>
+    </div>
+    <div class="isecond d-flex align-items-center">
+        <a href="#/partner">Parceiros</a>
     </div>
 
     <div style="margin: auto"></div>
@@ -22,18 +19,20 @@
                 <i ngbDropdownToggle class="i-Bell text-muted header-icon" role="button"></i>
             </div>
             <div ngbDropdownMenu class="notification-dropdown rtl-ps-none" perfectScrollbar>
-                <div class="dropdown-item d-flex" *ngFor="let item of notifications" [routerLink]="[item.link]">
+                <div class="dropdown-item d-flex" *ngFor="let item of notifications">
                     <div class="notification-icon">
                         <i class="{{item.icon}} text-{{item.status}} mr-1"></i>
                     </div>
-                    <div class="notification-details flex-grow-1">
-                        <p class="m-0 d-flex align-items-center">
-                            <span>{{item.title}}</span>
-                            <span *ngIf="item.badge" class="badge badge-pill badge-{{item.status}} ml-1 mr-1">{{item.badge}}</span>
-                            <span class="flex-grow-1"></span>
-                            <span class="text-small text-muted ml-auto">{{item.time | relativeTime}}</span>
-                        </p>
-                        <p class="text-small text-muted m-0">{{item.text | excerpt:30}}</p>
+                    <div class=" {{!item.read ? 'notRead' : ''}}" (click)="openNotification(modalNotification, item)">
+                        <div class="notification-details flex-grow-1" >
+                            <p class="m-0 d-flex align-items-center">
+                                <span>{{item.title}}</span>
+                                <span *ngIf="!item.read" class="badge badge-pill badge-{{item.badge}} ml-1 mr-1">{{item.badge}}</span>
+                                <span class="flex-grow-1"></span>
+                                <span class="text-small text-muted ml-auto">{{item.date | date}}</span>
+                            </p>
+                            <p class="text-small text-muted m-0">{{item.body | excerpt:30}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -44,7 +43,8 @@
                 <div class="dropdown-header">
                     <i class="i-Lock-User mr-1"></i> {{auth.getuser().name}}
                 </div>
-                <button class="dropdown-item">Meus dados</button>
+                <button class="dropdown-item" (click)="userData()">Meus dados</button>
+                <button class="dropdown-item" (click)="open(modalTrocarSenhar)">Trocar Senha</button>
                 <button class="dropdown-item" (click)="signout()">Sair</button>
             </div>
         </div>
@@ -54,12 +54,119 @@
                 <div class="dropdown-header">
                     <i class="i-User mr-1"></i> Olá visitante!
                 </div>
-                <button class="dropdown-item" (click)="signin()">Entrar</button>
-                <button class="dropdown-item" (click)="signup()">Cadastrar</button>
+                <button class="dropdown-item" (click)="open(modalLogin)">Entrar</button>
+                <button class="dropdown-item" (click)="open(modalCadastro)">Cadastrar</button>
                 
             </div>
         </div>
 
     </div>
-
 </div>
+
+<ng-template #modalCadastro let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Cadastrar</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="registerForm">
+            <div class="form-group">
+              <label for="name">Nome</label>
+              <input ngbAutofocus id="name" formControlName="name"  class="form-control form-control-rounded" type="text">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input id="email" class="form-control form-control-rounded" formControlName="email" type="email">
+            </div>
+            <div class="form-group">
+              <label for="password">Senha</label>
+              <input id="password" class="form-control form-control-rounded" formControlName="password" type="password">
+            </div>
+            <div class="form-group">
+              <label for="repassword">Confirmar Senhar</label>
+              <input id="confirmPassword" class="form-control form-control-rounded" formControlName="confirmPassword" type="password">
+            </div>
+          </form>
+    </div>
+    <div class="modal-footer">
+        <button (click)="signup()" class="btn btn-primary btn-block btn-rounded mt-3">Cadastrar</button>
+    </div>
+  </ng-template>
+
+  <ng-template #modalLogin let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Login</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="signin()" [formGroup]="signinForm">
+           <div class="form-group">
+              <label for="email">Email</label>
+              <input ngbAutofocus id="email" class="form-control form-control-rounded" formControlName="email" type="email">
+            </div>
+            <div class="form-group">
+              <label for="password">Senha</label>
+              <input id="password" class="form-control form-control-rounded" formControlName="password" type="password">
+            </div>
+            <button class="btn btn-primary btn-block btn-rounded mt-3">Entrar</button>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="mt-3 text-center">
+            <a href="" class="text-muted" routerLink="/sessions/forgot"><u>Esqueceu a senha?</u></a>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #modalTrocarSenhar let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Alterar Senha</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="changePasswordForm">
+            <div class="form-group">
+                <label for="oldPassword">Senha Antiga</label>
+                <input ngbAutofocus id="oldPassword" class="form-control form-control-rounded" formControlName="oldPassword" type="password">
+            </div>
+            <div class="form-group">
+                <label for="password">Nova Senha</label>
+                <input id="password" class="form-control form-control-rounded" formControlName="password" type="password">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Senha</label>
+                <input id="confirmPassword" class="form-control form-control-rounded" formControlName="confirmPassword" type="password">
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="mt-3 text-center">
+            <button (click)="changePassword()" class="btn btn-primary btn-block btn-rounded mt-3">Alterar Senha</button>
+        </div>
+    </div>
+  </ng-template>
+
+<ng-template #modalNotification let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{notificationForm.title}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="body">{{notificationForm.body}}</label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="mt-3 text-center">
+            <button (click)="console.log(1)" class="btn btn-primary btn-block btn-rounded mt-3">Verificar</button>
+        </div>
+    </div>
+  </ng-template>
